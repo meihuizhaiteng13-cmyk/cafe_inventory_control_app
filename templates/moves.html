@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title %}仕入台帳（入出庫）{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-end mb-2">
+  <div>
+    <h1 class="h3 fw-bold mb-0">仕入台帳（入出庫）</h1>
+    <div class="text-muted">紙のメモの代わりに、サッと入力</div>
+  </div>
+  <a class="btn btn-outline-secondary btn-lg" href="{{ url_for('items_list') }}">在庫一覧へ</a>
+</div>
+
+<!-- 入出庫フォーム -->
+<form method="post" class="card shadow-sm p-4 mb-3">
+
+  <div class="mb-3">
+    <label class="form-label">品目</label>
+    <select class="form-select form-select-lg" name="item_id" required>
+      <option value="">選択してください</option>
+      {% for i in items %}
+        <option value="{{ i['id'] }}">
+          {{ i['name'] }}（現在 {{ i['qty']|int }} / 単位：{{ i['unit'] }}）
+        </option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <div class="row g-3 mb-3">
+    <div class="col-6">
+      <label class="form-label">入出庫</label>
+      <select class="form-select form-select-lg" name="direction" required>
+        <option value="IN">入庫（＋）</option>
+        <option value="OUT">出庫（－）</option>
+      </select>
+    </div>
+
+    <div class="col-6">
+      <label class="form-label">数量（整数）</label>
+      <input class="form-control form-control-lg"
+             type="number" name="qty"
+             inputmode="numeric" step="1" min="1"
+             placeholder="例：1" required>
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">メモ（任意）</label>
+    <input class="form-control form-control-lg" name="note" placeholder="例：マルナカで購入 / ラテ用に使用">
+  </div>
+
+  <button class="btn btn-primary btn-lg w-100">登録</button>
+</form>
+
+<!-- 直近履歴 -->
+<div class="card shadow-sm">
+  <div class="card-body">
+    <div class="d-flex justify-content-between align-items-center">
+      <h2 class="h5 fw-bold mb-0">直近の入出庫履歴（10件）</h2>
+    </div>
+
+    <div class="mt-3">
+      {% if moves %}
+        <div class="list-group">
+          {% for m in moves %}
+            <div class="list-group-item">
+              <div class="d-flex justify-content-between">
+                <div class="fw-semibold">{{ m['item_name'] }}</div>
+
+                <div class="{% if m['direction']=='OUT' %}text-danger{% else %}text-success{% endif %}">
+                  {% if m['direction']=='OUT' %}-{% else %}+{% endif %}
+                  {{ m['qty']|int }} / {{ m['unit'] }}
+                </div>
+              </div>
+
+              <div class="text-muted small">
+                {{ m['happened_at'] }}
+                {% if m['note'] %} / {{ m['note'] }}{% endif %}
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="alert alert-secondary mb-0">まだ履歴がありません。</div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+

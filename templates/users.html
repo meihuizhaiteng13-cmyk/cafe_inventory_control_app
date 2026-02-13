@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}担当者一覧{% endblock %}
+{% block content %}
+
+<h1 class="h3 fw-bold mb-3">担当者一覧</h1>
+
+{% if users|length == 0 %}
+  <div class="alert alert-info">担当者がまだ登録されていません。</div>
+{% else %}
+  <div class="card shadow-sm">
+    <div class="table-responsive">
+      <table class="table table-hover mb-0">
+        <thead class="table-light">
+          <tr>
+            <th>ID</th>
+            <th>名前</th>
+            <th>役割</th>
+            <th>有効</th>
+            <th>作成日</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for u in users %}
+          <tr>
+            <td>{{ u.user_id }}</td>
+            <td>{{ u.name }}</td>
+            <td>{{ "店主" if u.role=="owner" else "スタッフ" }}</td>
+            <td>{{ "○" if u.is_active==1 else "×" }}</td>
+            <td class="text-muted small">{{ u.created_at }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+{% endif %}
+
+{% endblock %}

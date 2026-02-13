@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}在庫一覧{% endblock %}
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-end mb-3">
+  <div>
+    <h1 class="h3 fw-bold mb-0">在庫一覧</h1>
+    <div class="text-muted">出先で確認して買い忘れ防止</div>
+  </div>
+
+  <div class="d-flex gap-2">
+    <a class="btn btn-primary btn-lg" href="{{ url_for('item_new') }}">＋ 商品登録</a>
+    <a class="btn btn-outline-secondary btn-lg" href="{{ url_for('deleted') }}">削除履歴</a>
+    <a class="btn btn-outline-dark btn-lg" href="{{ url_for('moves') }}">仕入台帳</a>
+    <a class="btn btn-outline-dark btn-lg" href="{{ url_for('users_list') }}">担当者一覧</a>
+  </div>
+</div>
+
+<table class="table table-striped bg-white shadow-sm">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>商品名</th>
+      <th>数量</th>
+      <th>単位</th>
+      <th>更新日時</th>
+      <th>操作</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for i in items %}
+    <tr>
+      <td>{{ i.id }}</td>
+      <td>{{ i.name }}</td>
+      <td>{{ i.qty }}</td>
+      <td>{{ i.unit }}</td>
+      <td>{{ i.updated_at }}</td>
+      <td>
+        <a class="btn btn-sm btn-primary" href="/items/{{ i.id }}/edit">編集</a>
+        <a class="btn btn-sm btn-danger" href="/items/{{ i.id }}/delete">削除</a>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% endblock %}
